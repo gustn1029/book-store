@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "./components/header/Header";
-
+import Providers from "./components/providers/Providers";
+import Loader from "./components/loader/Loader";
 
 export const metadata: Metadata = {
   title: "Book Store",
@@ -16,8 +17,13 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <Header />
-        <main className="max-w-[1260px] w-full m-auto px-[30px]">{children}</main>
+        <Providers>
+          <Loader />
+          <Header />
+          <main className="max-w-[1260px] w-full m-auto px-[30px]">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );
