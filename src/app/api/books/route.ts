@@ -21,15 +21,18 @@ export async function GET(request: Request) {
   }
 }
 
+// app/api/books/route.ts
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    
     const newBook = await booksApi.createBook(body);
+    
     return NextResponse.json(newBook, { status: 201 });
   } catch (error) {
-    console.error("Failed to fetch books:", error);
+    console.error("Detailed error:", error);
     return NextResponse.json(
-      { error: "Failed to create book" },
+      { error: error instanceof Error ? error.message : "Failed to create book" },
       { status: 500 }
     );
   }
