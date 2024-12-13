@@ -3,7 +3,11 @@
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
-const Heading = () => {
+interface HeadingProps {
+    isHidden?: boolean;
+}
+
+const Heading = ({isHidden = false}:HeadingProps) => {
     const path = usePathname();
     const [title, setTitle] = useState<string>("")
     useEffect(()=> {
@@ -15,7 +19,7 @@ const Heading = () => {
         }
     },[path])
     return (
-    <h1>book info {title} page</h1>
+    <h1 className={`${isHidden ? "sr-only": ""}`}>book info {title} page</h1>
   )
 }
 
