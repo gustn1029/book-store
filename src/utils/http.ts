@@ -78,3 +78,26 @@ export const fetchBooksDetail = async ({ id }: { id: string }): Promise<Book> =>
     throw new Error(`${error}`);
   }
 };
+
+export const fetchEditBook = async ({data, id}:{data: Book, id:string}) => {
+  try {
+    const res = await fetch(`/api/books/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(
+        errorData.error || `수정에 실패했습니다. (${res.status})`
+      );
+    }
+
+    return await res.json();
+  } catch (error) {
+    throw error;
+  }
+};
