@@ -46,6 +46,9 @@ const BooksClient = () => {
     ],
     queryFn: () => fetchBooks(searchParams),
     placeholderData: keepPreviousData,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    staleTime: 0, 
   });
 
   const handlePageChange = (newPage: number) => {
