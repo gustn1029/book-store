@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     // 상세한 에러 로깅
     console.error("API Route error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch books", details: error.message },
+      { error: "Failed to fetch books", details: `${error}` },
       { status: 500 }
     );
   }
