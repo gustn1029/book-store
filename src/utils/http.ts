@@ -101,3 +101,25 @@ export const fetchEditBook = async ({data, id}:{data: Book, id:string}) => {
     throw error;
   }
 };
+
+export const fetchDeleteBook = async (id: string) => {
+  try {
+    const res = await fetch(`/api/books/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(
+        errorData.error || `삭제에 실패했습니다. (${res.status})`
+      );
+    }
+
+    return await res.json();
+  } catch (error) {
+    throw error;
+  }
+};
