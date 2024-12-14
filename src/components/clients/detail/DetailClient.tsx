@@ -3,16 +3,19 @@
 import LabelText from "@/components/labelText/LabelText";
 import Loader from "@/components/loader/Loader";
 import { fetchBooksDetail } from "@/utils/http";
+import { Button } from "@nextui-org/button";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 import React, { Suspense } from "react";
 
 const DetailClient = ({ id }: { id: string }) => {
+  const router = useRouter();
+
   const { data } = useQuery({
     queryKey: ["books", id],
     queryFn: () => fetchBooksDetail({ id }),
     enabled: !!id,
-    staleTime: Infinity,
   });
 
   return (
@@ -34,6 +37,10 @@ const DetailClient = ({ id }: { id: string }) => {
             title="등록 일시"
             value={dayjs(data?.createdAt).format("YYYY.MM.DD HH:mm:dd") || ""}
           />
+          <div className="flex gap-[30px] justify-center">
+            <Button onPress={()=> router.push(`/books/${id}/edit`)} color="primary" variant="solid">수정</Button>
+            <Button color="default" variant="solid" onPress={()=> router.push(`/`)} >뒤로가기</Button>
+          </div>
         </div>
       </Suspense>
     </>
