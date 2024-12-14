@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { BooksResponse, FetchBooksParams } from './../type/index';
+import { BooksResponse, FetchBooksParams } from "./../type/index";
 import { storage } from "@/lib/firebase";
 import { Book } from "@/type";
 import { QueryClient } from "@tanstack/react-query";
@@ -8,21 +8,25 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 export const queryClient = new QueryClient();
 
-export const fetchBooks = async ({page, search = "", searchField}:FetchBooksParams): Promise<BooksResponse> => {
+export const fetchBooks = async ({
+  page,
+  search = "",
+  searchField,
+}: FetchBooksParams): Promise<BooksResponse> => {
   const params = new URLSearchParams({
     page: page.toString(),
     search,
-    ...(searchField && {searchField})
+    ...(searchField && { searchField }),
   });
 
   const res = await fetch(`/api/books?${params}`);
 
   if (!res.ok) {
-    throw new Error('Failed to fetch books');
+    throw new Error("Failed to fetch books");
   }
 
   return res.json();
-}
+};
 
 export const uploadImage = async (file: File) => {
   try {
@@ -40,24 +44,37 @@ export const uploadImage = async (file: File) => {
 };
 
 export const fetchCreateBook = async (data: Book) => {
-    try {
-      const res = await fetch("/api/books", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-  
-      if (!res.ok) {
-        // 에러 응답의 내용을 가져옴
-        const errorData = await res.json();
-        throw new Error(errorData.error || `등록에 실패했습니다. (${res.status})`);
-      }
-  
-      return await res.json();
-    } catch (error) {
-      // 에러를 throw해서 mutation에서 처리할 수 있게 함
-      throw error;
+  try {
+    const res = await fetch("/api/books", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(
+        errorData.error || `등록에 실패했습니다. (${res.status})`
+      );
     }
-  };
+
+    return await res.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchBooksDetail = async ({ id }: { id: string }): Promise<Book> => {
+  try {
+    const res = await fetch(`/api/books/${id}`);
+    if (!res.ok) {
+      throw new Error("Failed to fetch book info");
+    }
+
+    return res.json();
+  } catch (error) {
+    throw new Error(`${error}`);
+  }
+};
