@@ -4,6 +4,7 @@ import LabelText from "@/components/labelText/LabelText";
 import Loader from "@/components/loader/Loader";
 import { fetchBooksDetail } from "@/utils/http";
 import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import React, { Suspense } from "react";
 
 const DetailClient = ({ id }: { id: string }) => {
@@ -31,7 +32,7 @@ const DetailClient = ({ id }: { id: string }) => {
           <LabelText title="설명" value={data?.description || ""} />
           <LabelText
             title="등록 일시"
-            value={data?.createdAt.toString() || ""}
+            value={dayjs(data?.createdAt).format("YYYY.MM.DD HH:mm:dd") || ""}
           />
         </div>
       </Suspense>
