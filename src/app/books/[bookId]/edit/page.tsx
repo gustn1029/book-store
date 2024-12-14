@@ -1,8 +1,12 @@
-import React from 'react'
+import EditClient from '@/components/clients/edit/EditClient';
+import React, { use } from 'react'
 
-const EditPage = () => {
+const EditPage = ({ params }: { params: Promise<{ bookId: string }> }) => {
+  const {bookId} = use(params);
   return (
-    <div>edit</div>
+    <>
+      <EditClient id={bookId} />
+    </>
   )
 }
 

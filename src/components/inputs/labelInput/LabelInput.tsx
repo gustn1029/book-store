@@ -14,7 +14,7 @@ const LabelInput = (props: LabelInputProps) => {
         className={`w-full py-[10px] px-[15px] rounded-[15px] border border-gray-300 ${
           props.inputClassName ? props.inputClassName : ""
         }`}
-        defaultValue={props.watch(props.label)}
+        defaultValue={props.watch(props.register.name)}
         aria-invalid={props.ariaInvalid}
       />
       {props.errorView && (
