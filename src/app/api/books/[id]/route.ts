@@ -3,10 +3,10 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   __request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{id: string}> }
 ) {
   try {
-    const id = await params.id;
+    const id = (await params).id
     const book = await booksApi.getBook(id);
     return NextResponse.json(book);
   } catch (error) {
@@ -17,11 +17,11 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{id: string}> }
 ) {
   try {
     const body = await request.json();
-    const id = await params.id;
+    const id = (await params).id
     const updatedBook = await booksApi.updateBook(id, body);
     return NextResponse.json(updatedBook);
   } catch (error) {
@@ -35,10 +35,10 @@ export async function PUT(
 
 export async function DELETE(
   __request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{id: string}> }
 ) {
   try {
-    const id = await params.id;
+    const id = (await params).id
     await booksApi.deleteBook(id);
     return NextResponse.json({ message: "Book deleted successfully" });
   } catch (error) {
