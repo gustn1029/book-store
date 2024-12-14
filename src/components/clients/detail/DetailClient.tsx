@@ -2,21 +2,39 @@
 
 import LabelText from "@/components/labelText/LabelText";
 import Loader from "@/components/loader/Loader";
-import { fetchBooksDetail } from "@/utils/http";
+import { fetchBooksDetail, fetchDeleteBook, queryClient } from "@/utils/http";
 import { Button } from "@nextui-org/button";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { Suspense } from "react";
 
 const DetailClient = ({ id }: { id: string }) => {
   const router = useRouter();
-  
+
   const { data } = useQuery({
     queryKey: ["books", id],
     queryFn: () => fetchBooksDetail({ id }),
     enabled: !!id,
     staleTime: Infinity,
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: fetchDeleteBook,
+    onSuccess: () => {
+      alert("책 정보가 삭제되었습니다.");
+      queryClient.invalidateQueries({ queryKey: ["books"] });
+      router.push('/');
+    },
+    onError: (error) => {
+      alert(`삭제에 실패했습니다. ${error.message}`);
+    },
+  });
+
+  const handleDelete = async () => {
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      await deleteMutation.mutateAsync(id);
+    }
+  };
 
   return (
     <>
@@ -40,6 +58,7 @@ const DetailClient = ({ id }: { id: string }) => {
           <div className="flex gap-[30px] justify-center">
             <Button onPress={()=> router.push(`/books/${id}/edit`)} color="primary" variant="solid">수정</Button>
             <Button color="default" variant="solid" onPress={()=> router.push(`/`)} >뒤로가기</Button>
+            <Button color="danger" variant="solid" onPress={handleDelete} >삭제</Button>
           </div>
         </div>
       </Suspense>
