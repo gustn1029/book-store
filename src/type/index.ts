@@ -39,6 +39,7 @@ export interface Book {
 export interface BooksResponse {
   books: Book[];
   totalPages: number;
+  totalCount: number;
 }
 
 export interface FetchBooksParams {

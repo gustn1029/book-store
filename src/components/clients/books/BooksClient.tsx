@@ -46,7 +46,6 @@ const BooksClient = () => {
     ],
     queryFn: () => fetchBooks(searchParams),
     placeholderData: keepPreviousData,
-    staleTime: 60 * 5 * 1000,
   });
 
   const handlePageChange = (newPage: number) => {
@@ -59,13 +58,10 @@ const BooksClient = () => {
   };
 
   const getItemNumber = (index: number) => {
-    if (data?.totalPages) {
-      return (
-        (data?.totalPages - searchParams.page) * 10 +
-        (data?.books.length ?? 0) -
-        index
-      );
+    if (data?.totalCount) {
+      return data.totalCount - ((searchParams.page - 1) * 10) - index;
     }
+    return 0;
   };
 
   const onSubmit = (data: FetchBooksParams) => {
