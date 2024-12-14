@@ -4,18 +4,20 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
-  // URL 파라미터 가져오기
-  const page = Number(searchParams.get("page")) || 1;
-  const search = searchParams.get("search") || "";
-  const searchField = searchParams.get("searchField") as "title" | "author";
-
   try {
+    const page = Number(searchParams.get("page")) || 1;
+    const search = searchParams.get("search") || "";
+    const searchField = searchParams.get("searchField") as "title" | "author";
+
+    console.log("Search params:", { page, search, searchField }); // 파라미터 확인
+
     const books = await booksApi.getBooks(page, search, searchField);
     return NextResponse.json(books);
   } catch (error) {
-    console.error("Failed to fetch books:", error);
+    // 상세한 에러 로깅
+    console.error("API Route error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch books" },
+      { error: "Failed to fetch books", details: error.message },
       { status: 500 }
     );
   }

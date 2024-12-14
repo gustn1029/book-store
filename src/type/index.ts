@@ -35,3 +35,19 @@ export interface Book {
   createdAt: Date;
   updatedAt: Date | null;
 }
+
+export interface BooksResponse {
+  books: Book[];
+  totalPages: number;
+}
+
+export interface FetchBooksParams {
+  page: number;
+  search?: string;
+  searchField?: 'title' | 'author';
+}
+
+export interface SelectOption {
+  value: string;
+  label: string;
+}

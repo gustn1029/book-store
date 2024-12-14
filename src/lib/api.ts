@@ -18,40 +18,35 @@ const COLLECTION_NAME = "books";
 
 export const booksApi = {
   // GET /api/books - 책 추가
-  getBooks: async (
-    page: number,
-    search: string,
-    searchField?: "title" | "author"
-  ) => {
-    const querySnapshot = await getDocs(
-      query(
+  getBooks: async (page: number, search: string, searchField?: "title" | "author") => {
+    try {
+      // 검색어가 있을 때만 where 절 적용
+      const baseQuery = query(
         collection(db, COLLECTION_NAME),
-        orderBy("createdAt", "desc"),
-        ...(search
-          ? [
-              where(searchField || "title", ">=", search.toLowerCase()),
-              where(
-                searchField || "title",
-                "<=",
-                search.toLowerCase() + "\uf8ff"
-              ),
-            ]
-          : []),
-        limit(10),
-        startAfter((page - 1) * 10)
-      )
-    );
+        orderBy("createdAt", "desc")
+      );
 
-    const total = await getDocs(collection(db, COLLECTION_NAME));
-    const totalPages = Math.ceil(total.size / 10);
+      const searchQuery = search
+        ? query(
+            baseQuery,
+            where(searchField || "title", ">=", search),
+            where(searchField || "title", "<=", search + "\uf8ff")
+          )
+        : baseQuery;
 
-    return {
-      books: querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })),
-      totalPages,
-    };
+      const querySnapshot = await getDocs(searchQuery);
+
+      return {
+        books: querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })),
+        totalPages: Math.ceil(querySnapshot.size / 10),
+      };
+    } catch (error) {
+      console.error("Firestore error:", error);
+      throw error; // API 라우트에서 에러 처리할 수 있도록
+    }
   },
   
   // POST /api/books - 책 추가
