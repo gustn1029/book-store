@@ -1,6 +1,28 @@
+'use client';
+
+import { BooksResponse, FetchBooksParams } from './../type/index';
 import { storage } from "@/lib/firebase";
 import { Book } from "@/type";
+import { QueryClient } from "@tanstack/react-query";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+
+export const queryClient = new QueryClient();
+
+export const fetchBooks = async ({page, search = "", searchField}:FetchBooksParams): Promise<BooksResponse> => {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    search,
+    ...(searchField && {searchField})
+  });
+
+  const res = await fetch(`/api/books?${params}`);
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch books');
+  }
+
+  return res.json();
+}
 
 export const uploadImage = async (file: File) => {
   try {
