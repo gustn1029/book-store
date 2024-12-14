@@ -3,6 +3,7 @@
 import LabelInput from "@/components/inputs/labelInput/LabelInput";
 import LabelSelect from "@/components/inputs/labelSelect/LabelSelect";
 import Loader from "@/components/loader/Loader";
+import Pagination from "@/components/pagination/Pagination";
 import { FetchBooksParams, SelectOption } from "@/type";
 import { fetchBooks } from "@/utils/http";
 import { Button } from "@nextui-org/button";
@@ -48,6 +49,25 @@ const BooksClient = () => {
     staleTime: 60 * 5 * 1000,
   });
 
+  const handlePageChange = (newPage: number) => {
+    if (data?.totalPages && data?.totalPages > 1) {
+      setSearchParams((prev) => ({
+        ...prev,
+        page: newPage,
+      }));
+    }
+  };
+
+  const getItemNumber = (index: number) => {
+    if (data?.totalPages) {
+      return (
+        (data?.totalPages - searchParams.page) * 10 +
+        (data?.books.length ?? 0) -
+        index
+      );
+    }
+  };
+
   const onSubmit = (data: FetchBooksParams) => {
     setSearchParams(data);
   };
@@ -91,44 +111,49 @@ const BooksClient = () => {
       </form>
       <h2>목록</h2>
       <Suspense fallback={<Loader />}>
-      <table className="text-center w-full">
-        <colgroup>
-          <col className="w-[50px]" />
-          <col className="w-[calc(65%-50px)] max-w-[calc(65%-190px)]" />
-          <col className="w-[15%]" />
-          <col className="min-w-[70px] w-[10%]" />
-          <col className="min-w-[70px] w-[10%]" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th>번호</th>
-            <th>제목</th>
-            <th>저자</th>
-            <th>가격</th>
-            <th>수량</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data?.books.map((el, idx) => {
-            return (
-              <tr key={el.id}>
-                <td>
-                  {data.totalPages > 1
-                    ? data.totalPages * 10 + (10 - idx)
-                    : data.books.length - idx}
-                </td>
-                <td>
-                  <Link href={`/books/${el.id}`} className="w-full block">{el.title}</Link>
-                </td>
-                <td>{el.author}</td>
-                <td>{el.price}</td>
-                <td>{el.stock}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+        <table className="text-center w-full">
+          <colgroup>
+            <col className="w-[50px]" />
+            <col className="w-[calc(65%-50px)] max-w-[calc(65%-190px)]" />
+            <col className="w-[15%]" />
+            <col className="min-w-[70px] w-[10%]" />
+            <col className="min-w-[70px] w-[10%]" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>제목</th>
+              <th>저자</th>
+              <th>가격</th>
+              <th>수량</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data?.books.map((el, idx) => {
+              return (
+                <tr key={el.id}>
+                  <td>{getItemNumber(idx)}</td>
+                  <td>
+                    <Link href={`/books/${el.id}`} className="w-full block">
+                      {el.title}
+                    </Link>
+                  </td>
+                  <td>{el.author}</td>
+                  <td>{el.price}</td>
+                  <td>{el.stock}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </Suspense>
+      {data && (
+        <Pagination
+          currentPage={searchParams.page}
+          totalPages={data.totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </>
   );
 };
