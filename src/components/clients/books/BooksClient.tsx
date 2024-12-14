@@ -8,7 +8,7 @@ import { fetchBooks } from "@/utils/http";
 import { Button } from "@nextui-org/button";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const BooksClient = () => {
@@ -90,6 +90,7 @@ const BooksClient = () => {
         </Button>
       </form>
       <h2>목록</h2>
+      <Suspense fallback={<Loader />}>
       <table className="text-center w-full">
         <colgroup>
           <col className="w-[50px]" />
@@ -127,6 +128,7 @@ const BooksClient = () => {
           })}
         </tbody>
       </table>
+      </Suspense>
     </>
   );
 };
